@@ -4,17 +4,24 @@ rule download_reads:
     Download raw sequencing reads from NCBI SRA.
     """
     threads: 1
+    shadow: "shallow"
     conda: "../envs/ena.yaml"
     params:
         outdir=RAW_READS
     output:
         fread_folder = folder(RAW_READS/"{accession}"),
-        read_1 = RAW_READS/"{accession}"/"{accession}_1.fastq",
-        read_2 = RAW_READS/"{accession}"/"{accession}_2.fastq"
+        read_1 = RAW_READS/"{accession}_1.fastq.gz",
+        read_2 = RAW_READS/"{accession}_2.fastq.gz"
     log:
         LOGDIR/"download_reads"/"{accession}.log"
     shell:
-        "enaDataGet.py -f fastq -d {params.outdir} {wildcards.accession}"
+        """
+        exec >{log}
+        exec 2>&1
+        enaDataGet.py -f fastq -d {params.outdir} {wildcards.accession}
+        mv {params.outdir}/{wildcards.accession}/* {params.outdir}
+
+        """
 
 rule pre_clean_qc:
     """
@@ -25,8 +32,8 @@ rule pre_clean_qc:
     params:
         outdir=RAW_REPORTS
     input:
-        read_1 = RAW_READS/"{accession}"/"{accession}_1.fastq",
-        read_2 = RAW_READS/"{accession}"/"{accession}_2.fastq"
+        read_1 = RAW_READS/"{accession}_1.fastq.gz",
+        read_2 = RAW_READS/"{accession}_2.fastq.gz"
     output:
         report1 = RAW_REPORTS/"{accession}_1.fastq.html",
         report2 = RAW_REPORTS/"{accession}_2.fastq.html"

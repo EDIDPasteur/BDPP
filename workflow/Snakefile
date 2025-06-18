@@ -44,12 +44,12 @@ def iter_accessions(file = ACCESSION):
 # Include rules
 
 include: "rules/download_reads.smk"
+include: "rules/clean_reads.smk"
 
 # Set final file
 rule all:
     input:
-        mapping_alignment = ALIGNMENTS/f"{PREFIX}_mapping_alignment.fasta",
-        assemblies = expand(ASSEMBLIES/f"{accession}_assembly.fasta", accession=iter_accessions()),
-        multiqc_report = REPORTS/"raw_reads_multiqc_report.html"
+        multiqc_report = REPORTS/"raw_reads_multiqc_report.html",
+        clean_multiqc_report = REPORTS/"clean_reads_multiqc_report.html"
 
 # End
