@@ -1,13 +1,12 @@
 rule trim_reads:
-    threads: config["TRIMMOMATIC"]["THREADS"]
+    shadow: "shallow"
+    threads: config["FASTP"]["THREADS"]
     conda: "../envs/clean_reads.yaml"
     params:
         outdir=CLEAN_READS,
-        adapter=config["TRIMMOMATIC"]["ADAPTERS_FILE"],
-        minlen=config["TRIMMOMATIC"]["MIN_LENGTH"],
-        qualitymin=config["TRIMMOMATIC"]["QUALITY_THRESHOLD"],
-        leading=config["TRIMMOMATIC"]["LEADING"],
-        trailing=config["TRIMMOMATIC"]["TRAILING"]
+        minlen=config["FASTP"]["MINLEN"],
+        minquality=config["FASTP"]["QUALITY_THRESHOLD"],
+        window_size=config["FASTP"]["WINDOW_SIZE"]
     input:
         read_1=RAW_READS/"{accession}_1.fastq.gz",
         read_2 = RAW_READS/"{accession}_2.fastq.gz"
@@ -20,14 +19,16 @@ rule trim_reads:
         """
         exec >{log}
         exec 2>&1
-        trimmomatic PE -threads {threads} -phred33 \
-            {input.read_1} {input.read_2} \
-            {output.read_1} /dev/null \
-            {output.read_2} /dev/null \
-            ILLUMINACLIP:{params.adapter}:2:30:10 \
-            LEADING:{params.leading} TRAILING:{params.trailing} \
-            SLIDINGWINDOW:4:{params.qualitymin} \
-            MINLEN:{params.minlen} 
+        fastp -i {input.read_1} -I {input.read_2} \
+            -o {output.read_1} -O {output.read_2} \
+            --detect_adapter_for_pe \
+            --thread {threads} \
+            --average_qual {params.minquality} \
+            --length_required {params.minlen} \
+            --cut_front --cut_tail \
+            --cut_window_size {params.window_size} \
+            --cut_mean_quality {params.minquality}
+             
         """
 
 rule post_clean_qc:
