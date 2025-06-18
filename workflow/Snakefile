@@ -1,0 +1,50 @@
+# Jordi Sevilla Fortuny
+# Date: 2025-06-18
+# Snakemake pipeline to download and process sequencing data from bacterial species
+
+import sys
+from pathlib import Path
+from os import listdir
+import snakemake
+from snakemake.utils import min_version
+import subprocess
+
+# Set minimum version of snakemake to work with
+min_version("9.60")
+
+# Load configuration files
+configfile: "config/config.yaml"
+configfile: "config/target.yaml"
+
+# Read configs
+PREFIX = config["PREFIX"]
+OUTDIR = Path(config["OUTDIR"])
+ACCESSION = config["ACCESSIONS_FILE"]
+READS = Path(OUTDIR/"reads")
+CLEAN_READS = Path(READS/"clean_reads")
+REPORTS = Path(OUTDIR/"reports")
+ASSEMBLIES = Path(OUTDIR/"assemblies")
+ALIGNMENTS = Path(OUTDIR/"alignments")
+LOGDIR = Path(OUTDIR/"logs")
+
+# Create working tree
+for d in [OUTDIR, READS, RAW_READS, CLEAN_READS, REPORTS, ASSEMBLIES, ALIGNMENTS, LOGDIR]:
+    d.mkdir(parents=True, exist_ok=True)
+
+# Usefull functions
+def iter_accessions(file = ACCESSION):
+    """Iterate over accessions in a file."""
+    with open(file) as f:
+        for line in f:
+            yield line.strip()
+
+# Include rules
+
+# Set final file
+rule all:
+    input:
+        mapping_alignment = ALIGNMENTS/f"{PREFIX}_mapping_alignment.fasta",
+        assemblies = expand(ASSEMBLIES/f"{accession}_assembly.fasta", accession=iter_accessions())
+
+
+# End
