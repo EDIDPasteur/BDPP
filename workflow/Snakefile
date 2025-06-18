@@ -21,14 +21,17 @@ PREFIX = config["PREFIX"]
 OUTDIR = Path(config["OUTDIR"])
 ACCESSION = config["ACCESSIONS_FILE"]
 READS = Path(OUTDIR/"reads")
+RAW_READS = Path(READS/"raw_reads")
 CLEAN_READS = Path(READS/"clean_reads")
 REPORTS = Path(OUTDIR/"reports")
+RAW_REPORTS = Path(REPORTS/"raw_reports")
+CLEAN_REPORTS = Path(REPORTS/"clean_reports")
 ASSEMBLIES = Path(OUTDIR/"assemblies")
 ALIGNMENTS = Path(OUTDIR/"alignments")
 LOGDIR = Path(OUTDIR/"logs")
 
 # Create working tree
-for d in [OUTDIR, READS, RAW_READS, CLEAN_READS, REPORTS, ASSEMBLIES, ALIGNMENTS, LOGDIR]:
+for d in [OUTDIR, READS, RAW_READS, CLEAN_READS, REPORTS, RAW_REPORTS, CLEAN_REPORTS, ASSEMBLIES, ALIGNMENTS, LOGDIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 # Usefull functions
@@ -40,11 +43,13 @@ def iter_accessions(file = ACCESSION):
 
 # Include rules
 
+include: "rules/download_reads.smk"
+
 # Set final file
 rule all:
     input:
         mapping_alignment = ALIGNMENTS/f"{PREFIX}_mapping_alignment.fasta",
-        assemblies = expand(ASSEMBLIES/f"{accession}_assembly.fasta", accession=iter_accessions())
-
+        assemblies = expand(ASSEMBLIES/f"{accession}_assembly.fasta", accession=iter_accessions()),
+        multiqc_report = REPORTS/"raw_reads_multiqc_report.html"
 
 # End

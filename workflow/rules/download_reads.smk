@@ -1,0 +1,61 @@
+
+rule download_reads:
+    """
+    Download raw sequencing reads from NCBI SRA.
+    """
+    threads: 1
+    conda: "../envs/ena.yaml"
+    params:
+        outdir=RAW_READS
+    output:
+        fread_folder = folder(RAW_READS/"{accession}"),
+        read_1 = RAW_READS/"{accession}"/"{accession}_1.fastq",
+        read_2 = RAW_READS/"{accession}"/"{accession}_2.fastq"
+    log:
+        LOGDIR/"download_reads"/"{accession}.log"
+    shell:
+        "enaDataGet.py -f fastq -d {params.outdir} {wildcards.accession}"
+
+rule pre_clean_qc:
+    """
+    Perform quality control on raw reads.
+    """
+    threads: 2
+    conda: "../envs/qc.yaml"
+    params:
+        outdir=RAW_REPORTS
+    input:
+        read_1 = RAW_READS/"{accession}"/"{accession}_1.fastq",
+        read_2 = RAW_READS/"{accession}"/"{accession}_2.fastq"
+    output:
+        report1 = RAW_REPORTS/"{accession}_1.fastq.html",
+        report2 = RAW_REPORTS/"{accession}_2.fastq.html"
+    log:
+        LOGDIR/"pre_clean_qc"/"{accession}.log"
+    shell:
+        """
+        exec >{log}
+        exec 2>&1
+        fastqc {input.read_1} {input.read_2} --outdir {params.outdir} --threads {threads} 
+
+        """
+    
+    rule pre_clean_multiqc:
+        params:
+            reports_dir=REPORTS,
+            raw_reports_dir=RAW_REPORTS,
+            report_name="raw_reads_multiqc_report.html"
+        input:
+            reports_1 = expand(RAW_REPORTS/"{accession}_1.fastq.html", accession=iter_accessions()),
+            reports_2 = expand(RAW_REPORTS/"{accession}_2.fastq.html", accession=iter_accessions())
+        output:
+            multiqc_report = REPORTS/"raw_reads_multiqc_report.html"
+        log:
+            LOGDIR/"pre_clean_multiqc"/"multiqc.log"
+        shell:
+            """
+            exec >{log}
+            exec 2>&1
+            multiqc {params.raw_reports_dir} -o {params.reports_dir} -n {params.report_name} --force
+            """
+    
