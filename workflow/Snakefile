@@ -10,7 +10,7 @@ from snakemake.utils import min_version
 import subprocess
 
 # Set minimum version of snakemake to work with
-min_version("9.60")
+min_version("9.6.0")
 
 # Load configuration files
 configfile: "config/config.yaml"

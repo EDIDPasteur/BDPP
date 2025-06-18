@@ -4,7 +4,7 @@ rule trim_reads:
     conda: "../envs/clean_reads.yaml"
     params:
         outdir=CLEAN_READS,
-        minlen=config["FASTP"]["MINLEN"],
+        minlen=config["FASTP"]["MIN_LENGTH"],
         minquality=config["FASTP"]["QUALITY_THRESHOLD"],
         window_size=config["FASTP"]["WINDOW_SIZE"]
     input:
@@ -43,8 +43,8 @@ rule post_clean_qc:
         read_1=CLEAN_READS/"{accession}_1.trimmed.fastq.gz",
         read_2=CLEAN_READS/"{accession}_2.trimmed.fastq.gz"
     output:
-        report1=CLEAN_REPORTS/"{accession}_1.trimmed.fastq.html",
-        report2=CLEAN_REPORTS/"{accession}_2.trimmed.fastq.html"
+        report1=CLEAN_REPORTS/"{accession}_1.trimmed_fastqc.html",
+        report2=CLEAN_REPORTS/"{accession}_2.trimmed_fastqc.html"
     log:
         LOGDIR/"post_clean_qc"/"{accession}.log"
     shell:
@@ -55,13 +55,14 @@ rule post_clean_qc:
         """
 
 rule post_clean_multiqc:
+    conda: "../envs/qc.yaml"
     params:
         reports_dir=REPORTS,
         clean_reports_dir=CLEAN_REPORTS,
         report_name="clean_reads_multiqc_report.html"
     input:
-        reports_1=expand(CLEAN_REPORTS/"{accession}_1.trimmed.fastq.html", accession=iter_accessions()),
-        reports_2=expand(CLEAN_REPORTS/"{accession}_2.trimmed.fastq.html", accession=iter_accessions())
+        reports_1=expand(CLEAN_REPORTS/"{accession}_1.trimmed_fastqc.html", accession=iter_accessions()),
+        reports_2=expand(CLEAN_REPORTS/"{accession}_2.trimmed_fastqc.html", accession=iter_accessions())
     output:
         multiqc_report=REPORTS/"clean_reads_multiqc_report.html"
     log:
