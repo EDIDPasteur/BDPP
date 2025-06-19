@@ -30,3 +30,16 @@ rule assembly:
         exit 0
 
         """
+
+rule assembly_report:
+    threads: 1
+    conda: "../envs/assembly.yaml"
+    input:
+        assembly_files = expand(ASSEMBLIES/"{accession}_assembly.fasta", accession=iter_accessions())
+    output:
+        stats = REPORTS/"assembly_report.txt"
+    log:
+        LOGDIR/"assembly_report.log"
+    script:
+        "../scripts/assembly_stats.py"
+    
