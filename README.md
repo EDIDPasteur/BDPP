@@ -1,1 +1,1 @@
-# Neisseria gonorrhoeae Download and Processing Pipeline
+# Bacterial genomes Download and Processing Pipeline
