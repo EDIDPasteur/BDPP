@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument(
         "-a", "--accessions",
         type=str,
-        required=True
+        required=True,
         help="File containing the accessions to process (one per line)"
     )
 
@@ -65,12 +65,22 @@ def main():
         "snakemake",
         "--cores", str(args.cores),
         "--config",
-        f"accessions={os.path.abspath(args.accessions)}",
-        f"outdir={os.path.abspath(args.outdir)}",
-        f"prefix={args.prefix}",
-        f"reference={args.reference}",
-        "--use-conda"
+        f"ACCESSIONS_FILE={os.path.abspath(args.accessions)}",
+        f"OUTDIR={os.path.abspath(args.outdir)}",
+        f"PREFIX={args.prefix}",
+        f"REFERENCE={args.reference}",
+        "--use-conda",
+        " -q rules"
     ])
 
     # Execute the command
+    print(' ____  ____  ____  ____  \n| __ )|  _ \\|  _ \\|  _ \\ \n|  _ \\| | | | |_) | |_) |\n| |_) | |_| |  __/|  __/ \n|____/|____/|_|   |_|    \n                         \n')
+    print("Bacterial genomes Download and Processing Pipeline (BDPP)")
+    print(f"Launching workflow with the following command:\n{cmd}\n")
     os.system(cmd)
+
+
+if __name__ == "__main__":
+    main()
+    sys.exit(0)
+ 
