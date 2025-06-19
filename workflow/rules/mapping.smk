@@ -62,3 +62,19 @@ rule snippy_core:
             --prefix {params.prefix} \
             {input.snippy_dirs}
         """
+
+rule clipkit:
+    threads: 1
+    conda: "../envs/mapping.yaml"
+    input:
+        core_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.full.aln"
+    output:
+        clipped_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.clipkit.aln"
+    log:
+        LOGDIR/"clipkit"/"clipkit.log"
+    shell:
+        """
+        exec >{log}
+        exec 2>&1
+        clipkit {input.core_alignment} -o {output.clipped_alignment}
+        """

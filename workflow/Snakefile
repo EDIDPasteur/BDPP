@@ -52,9 +52,9 @@ include: "rules/assembly.smk"
 # Set final file
 rule all:
     input:
-        multiqc_report = REPORTS/"raw_reads_multiqc_report.html",
-        clean_multiqc_report = REPORTS/"clean_reads_multiqc_report.html",
+        #multiqc_report = REPORTS/"raw_reads_multiqc_report.html",
+        #clean_multiqc_report = REPORTS/"clean_reads_multiqc_report.html",
         core_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.full.aln",
-        assembly = expand(ASSEMBLIES/"{accession}_assembly.fasta", accession=iter_accessions()),
+        #assembly = expand(ASSEMBLIES/"{accession}_assembly.fasta", accession=iter_accessions()),
         stats = REPORTS/"assembly_report.txt"
 # End
