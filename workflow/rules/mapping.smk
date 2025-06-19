@@ -69,7 +69,7 @@ rule clipkit:
     input:
         core_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.full.aln"
     output:
-        clipped_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.clipkit.aln"
+        clipped_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.clipkit.full.aln"
     log:
         LOGDIR/"clipkit"/"clipkit.log"
     shell:
