@@ -69,7 +69,7 @@ The pipeline will clean the reads using [`Fastp`](https://github.com/OpenGene/fa
 
 ### Mapping the reads
 
-The pipeline will map the cleaned reads to the reference genome using [`snippy`](https://github.com/tseemann/snippy) and combine the results with `snippy-core` to generate a reference mapping alignment. The mapping will be performed using the parameters defined in the config file.
+The pipeline will map the cleaned reads to the reference genome using [`snippy`](https://github.com/tseemann/snippy) and combine the results with `snippy-core` to generate a reference mapping alignment. The mapping will be performed using the parameters defined in the config file. Then, [`ClipKIT`](https://github.com/JLSteenwyk/ClipKIT) is used to remove the low quality regions from the mapping.
 
 ### Assembly
 
