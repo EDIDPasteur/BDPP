@@ -42,6 +42,31 @@ Then you can run the pipeline with the following command:
 ```
 snakemake --use-conda --cores [number_of_cores]
 ```
+
+In addition, you can also run the pipeline with the [bdpp-runner.py](bdpp-runner.py) script which has the following options:
+
+```
+usage: bdpp-runner.py [-h] [-c CORES] -a ACCESSIONS [-o OUTDIR] [-p PREFIX] -r REFERENCE
+
+Run the BDPP snakemake workflow.
+
+options:
+  -h, --help            show this help message and exit
+  -c CORES, --cores CORES
+                        Number of cores to use for the workflow
+  -a ACCESSIONS, --accessions ACCESSIONS
+                        File containing the accessions to process (one per line)
+  -o OUTDIR, --outdir OUTDIR
+                        Output directory for the results
+  -p PREFIX, --prefix PREFIX
+                        Prefix for the output files
+  -r REFERENCE, --reference REFERENCE
+                        Accession of the reference genome to be used for the mapping step. This should be a valid accession from the NCBI
+                        database. (NC_011035.1 for example)
+```
+This script manage correctly paths within your system so you can add the [bdpp-runner.py](bdpp-runner.py) script to your PATH and use it in any location.
+
+
 ## Outputs
 
 The pipeline will generate the following main outputs in the output directory specified in the targets file:
