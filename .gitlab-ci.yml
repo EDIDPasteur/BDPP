@@ -15,5 +15,5 @@ test-conda_envs:
     key: ${CI_JOB_NAME}
   script:
     - echo "Running tests..."
-    - snakemake --cores 1 --use-conda --conda-create-envs-only --configfile .test/target.yaml --config ACCESSIONS_FILE=.tests/accessions.txt OUTDIR=.tests/output
+    - snakemake --cores 1 --use-conda --conda-create-envs-only --configfile .test/target.yaml --config ACCESSIONS_FILE=.test/accessions.txt OUTDIR=.test/output
 
