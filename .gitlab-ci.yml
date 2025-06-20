@@ -1,0 +1,25 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_MESSAGE =~ /-draft$/
+      when: never
+      when: always
+
+services:
+    - name: docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+stages:
+  - test
+
+test-conda_envs:
+  stage: test
+  image: snakemake/snakemake:stable
+  cache:
+    key: ${CI_JOB_NAME}
+  script:
+    - echo "Running tests..."
+    - snakemake --cores 1 --use-conda --conda-create-envs-only
+
