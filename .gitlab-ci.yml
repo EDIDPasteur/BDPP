@@ -27,7 +27,7 @@ test-snakemake:
     - echo "Running tests..."
     - snakemake --cores 16 --use-conda --configfile .test/target.yaml --config ACCESSIONS_FILE=.test/accessions.txt OUTDIR=.test/output
   
-  test-runner:
+test-runner:
   stage: test
   image: snakemake/snakemake:stable
   cache:
@@ -35,5 +35,5 @@ test-snakemake:
   script:
     - echo "Running tests..."
     - python bdpp-runner.py -c 16 -a .test/accessions.txt -o .test/output -p test -r NC_011035.1
-    
+
 
