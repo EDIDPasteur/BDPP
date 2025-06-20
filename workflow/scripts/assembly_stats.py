@@ -33,7 +33,7 @@ class Assembly:
         return len(full_genome) - nonambiguous_bases
     
     def get_gc_content(self):
-        full_genome = ''.join(str(record.seq) for record in self.fasta).upper
+        full_genome = ''.join(str(record.seq) for record in self.fasta).upper()
         gc_count = full_genome.count('G') + full_genome.count('C')
         return gc_count / len(full_genome)
 
