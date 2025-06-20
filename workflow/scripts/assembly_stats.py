@@ -32,6 +32,10 @@ class Assembly:
         nonambiguous_bases = sum(full_genome.count(base) for base in "ACGT")
         return len(full_genome) - nonambiguous_bases
     
+    def get_gc_content(self):
+        full_genome = ''.join(str(record.seq) for record in self.fasta).upper
+        gc_count = full_genome.count('G') + full_genome.count('C')
+        return gc_count / len(full_genome)
 
     def get_stats(self):
         n50 = self.calculate_n50()
@@ -41,7 +45,8 @@ class Assembly:
             "genome_size": self.genome_size,
             "n_contigs": self.n_contigs,
             "n50": n50,
-            "n_ambiguous_bases": n_ambiguous_bases
+            "n_ambiguous_bases": n_ambiguous_bases,
+            "gc_content": self.get_gc_content()
         }
     
 
@@ -54,9 +59,9 @@ def main():
     stats = [assembly.get_stats() for assembly in assemblies]
     # Write output
     with open(snakemake.output.stats, "w") as f:
-        f.write("name\tgenome_size\tn_contigs\tn50\tn_ambiguous_bases\n")
+        f.write("name\tgenome_size\tn_contigs\tn50\tn_ambiguous_bases\tgc_content\n")
         for stat in stats:
-            f.write(f"{stat['name']}\t{stat['genome_size']}\t{stat['n_contigs']}\t{stat['n50']}\t{stat['n_ambiguous_bases']}\n")
+            f.write(f"{stat['name']}\t{stat['genome_size']}\t{stat['n_contigs']}\t{stat['n50']}\t{stat['n_ambiguous_bases']}\t{stat['gc_content']:.2f}\n")
 
     logging.info("Assembly statistics calculated successfully.")
 
