@@ -1,0 +1,61 @@
+# Jordi Sevilla Fortuny
+# Date: 2025-06-18
+# Snakemake pipeline to download and process sequencing data from bacterial species
+
+import sys
+from pathlib import Path
+from os import listdir
+import snakemake
+from snakemake.utils import min_version
+import subprocess
+
+# Set minimum version of snakemake to work with
+min_version("9.6.0")
+
+# Load configuration files
+configfile: "config/config.yaml"
+configfile: "config/target.yaml"
+
+# Read configs
+PREFIX = config["PREFIX"]
+OUTDIR = Path(config["OUTDIR"])
+ACCESSION = config["ACCESSIONS_FILE"]
+READS = Path(OUTDIR/"reads")
+RAW_READS = Path(READS/"raw_reads")
+CLEAN_READS = Path(READS/"clean_reads")
+REPORTS = Path(OUTDIR/"reports")
+RAW_REPORTS = Path(REPORTS/"raw_reports")
+CLEAN_REPORTS = Path(REPORTS/"clean_reports")
+ASSEMBLIES = Path(OUTDIR/"assemblies")
+ALIGNMENTS = Path(OUTDIR/"mapping")
+SNIPPY = Path(ALIGNMENTS/"snippy")
+LOGDIR = Path(OUTDIR/"logs")
+
+# Create working tree
+for d in [OUTDIR, READS, RAW_READS, CLEAN_READS, REPORTS, RAW_REPORTS, CLEAN_REPORTS, ASSEMBLIES, ALIGNMENTS, SNIPPY, LOGDIR]:
+    d.mkdir(parents=True, exist_ok=True)
+
+# Usefull functions
+def iter_accessions(file = ACCESSION):
+    """Iterate over accessions in a file."""
+    with open(file) as f:
+        for line in f:
+            yield line.strip()
+
+# Include rules
+
+include: "rules/download_reads.smk"
+include: "rules/clean_reads.smk"
+include: "rules/mapping.smk"
+include: "rules/assembly.smk"
+
+# Set final file
+rule all:
+    input:
+        multiqc_report = REPORTS/"raw_reads_multiqc_report.html",
+        clean_multiqc_report = REPORTS/"clean_reads_multiqc_report.html",
+        core_alignment = ALIGNMENTS/f"{config["PREFIX"]}_mapping.full.aln",
+        assembly = expand(ASSEMBLIES/"{accession}_assembly.fasta", accession=iter_accessions()),
+        stats = REPORTS/"assembly_report.txt",
+        clipkit = ALIGNMENTS/f"{config["PREFIX"]}_mapping.clipkit.full.aln"
+# End

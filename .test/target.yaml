@@ -1,0 +1,8 @@
+ACCESSIONS_FILE:
+  "/Users/jordi/pasteur/projects/bdpp/.test/accesions.txt"
+PREFIX:
+  "TEST"
+OUTDIR:
+  "/Users/jordi/pasteur/projects/bdpp/TEST"
+REFERENCE:
+  "NC_011035.1"

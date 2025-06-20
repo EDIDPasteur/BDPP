@@ -1,0 +1,6 @@
+# Snakemake
+/.snakemake/
+
+# MAC
+.DS_Store
+

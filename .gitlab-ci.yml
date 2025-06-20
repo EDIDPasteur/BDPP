@@ -1,0 +1,44 @@
+services:
+    - name: docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+workflow:
+  name: "Test BDPP pipeline"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+
+stages:
+  - test
+
+test-conda_envs:
+  stage: test
+  image: snakemake/snakemake:stable
+  cache:
+    key: ${CI_JOB_NAME}
+  script:
+    - echo "Running tests..."
+    - snakemake --cores 1 --use-conda --conda-create-envs-only --configfile .test/target.yaml --config ACCESSIONS_FILE=.test/accessions.txt OUTDIR=.test/output
+
+
+test-snakemake:
+  stage: test
+  image: snakemake/snakemake:stable
+  cache:
+    key: ${CI_JOB_NAME}
+  script:
+    - echo "Running tests..."
+    - snakemake --cores 16 --use-conda --configfile .test/target.yaml --config ACCESSIONS_FILE=.test/accessions.txt OUTDIR=.test/output
+  
+test-runner:
+  stage: test
+  image: snakemake/snakemake:stable
+  cache:
+    key: ${CI_JOB_NAME}
+  script:
+    - echo "Running tests..."
+    - python bdpp-runner.py -c 16 -a .test/accessions.txt -o .test/output -p test -r NC_011035.1
+
+

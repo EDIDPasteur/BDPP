@@ -1,0 +1,7 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - entrez-direct==24.0
+  - snippy==4.6.0
+  - clipkit==2.4.1
