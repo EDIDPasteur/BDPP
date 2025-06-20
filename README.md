@@ -2,6 +2,7 @@
 
 [![Snakemake](https://img.shields.io/badge/Snakemake-≥9.6.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 [![License (AGPL version 3)](https://img.shields.io/badge/license-GNU%20AGPL%20version%203-green.svg)](COPYING)
+[![pipeline status](https://gitlab.pasteur.fr/jsevilla/bdpp/badges/dev/pipeline.svg)](https://gitlab.pasteur.fr/jsevilla/bdpp/-/commits/dev)
 
 The porpouse of this pipeline is to download and process bacterial sequencing reads from the SRA database.
 
