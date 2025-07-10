@@ -99,7 +99,7 @@ The pipeline will map the cleaned reads to the reference genome using [`snippy`]
 
 ### Assembly
 
-The pipeline will assemble the cleaned reads using [`spades`](https://github.com/ablab/spades). The spades parameters can be modified in the config file. An in house python script ([assembly_stats.py](scripts/assembly_stats.py)) will be used to generate a report with the assembly statistics (genome length, number of contigs, n50 and number of ambiguous bases).
+The pipeline will assemble the cleaned reads using the [`shovill`](https://github.com/tseemann/shovill) pipeline. The spades parameters can be modified in the config file. An in house python script ([assembly_stats.py](scripts/assembly_stats.py)) will be used to generate a report with the assembly statistics (genome length, number of contigs, n50 and number of ambiguous bases).
 
 
 ## Considerations

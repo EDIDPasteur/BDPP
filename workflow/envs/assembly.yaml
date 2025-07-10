@@ -2,5 +2,5 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - spades==4.2.0
+  - shovill==1.1.0
   - biopython==1.80

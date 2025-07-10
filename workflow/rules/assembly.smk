@@ -1,10 +1,8 @@
 rule assembly:
-    threads: config["SPADES"]["THREADS"]
+    threads: config["SHOVILL"]["THREADS"]
     shadow: "shallow"
     conda: "../envs/assembly.yaml"
     params:
-        memory = config["SPADES"]["MEMORY"],
-        kmers = config["SPADES"]["KMER_LENGTHS"],
         assemblies_dir = ASSEMBLIES
     input:
         read1 = CLEAN_READS/"{accession}_1.trimmed.fastq.gz",
@@ -18,14 +16,10 @@ rule assembly:
         """
         exec >{log}
         exec 2>&1
-        mkdir -p {params.assemblies_dir}/{wildcards.accession}
-        spades.py --threads {threads} --memory {params.memory} \
-            -k {params.kmers} \
-            -1 {input.read1} -2 {input.read2} \
-            -o {params.assemblies_dir}/{wildcards.accession} \
-            --only-assembler
+         shovill --outdir {params.assemblies_dir}/{wildcards.accession} \
+            --R1 {input.read1} --R2 {input.read2} --force
 
-        mv {params.assemblies_dir}/{wildcards.accession}/contigs.fasta {output.assembly}
+        mv {params.assemblies_dir}/{wildcards.accession}/contigs.fa {output.assembly}
 
         exit 0
 
